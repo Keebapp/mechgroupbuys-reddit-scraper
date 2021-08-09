@@ -8,7 +8,8 @@ def getType(title):
     keeb = {"108", "104", "19x", "80", "88", "tkl", "8x", "75", "84", "65", "67", "68", "sixty five",
             "sixty-five", "sixtyfive", "60", "61", "64", "40", "44", "47"}
 
-    keycap_types = {"kat", "gmk", "kam", "epbt", "sa", "jtk", "filco", "akko", "npkc", "pbt", "abs", "domikey"}
+    keycap_types = {"kat", "gmk", "kam", "epbt", "sa", "jtk", "filco", "akko", "npkc", "pbt", "abs", "domikey", "dsa",
+                    "dss", "mg"}
     # may be missing some, feel free to check :)
     words = title.split(" ")
     for word in words:
@@ -34,21 +35,21 @@ def getKeebSize(title):
     sixty = {"60", "61", "64"}
     forty = {"40", "44", "47"}
 
-    for word in full_size:
+    for keyword in full_size:
         search_term = ".*" + word + ".*"
         if re.search(search_term, title.lower()) is not None:
             return "Full-Size"
 
-    for word in tkl:
+    for keyword in tkl:
         search_term = ".*" + word + ".*"
         if re.search(search_term, title.lower()) is not None:
             return "TKL"
 
-    for word in seventy_five:
+    for keyword in seventy_five:
         search_term = ".*" + word + ".*"
         if re.search(search_term, title.lower()) is not None:
             return "Seventy-five"
-    for word in sixty_five:
+    for keyword in sixty_five:
         search_term = ".*" + word + ".*"
         if re.search(search_term, title.lower()) is not None:
             return "Sixty-five"
