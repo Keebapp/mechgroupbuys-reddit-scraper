@@ -33,7 +33,9 @@ class GroupBuy:
         if self.__itemType in range(0, 4):
             return self.__writtenItemType
         else:
-            raise ModuleNotFoundError("An item type for group buy '" + self.__name + "' has not been set.")
+            # raise ModuleNotFoundError("An item type for group buy '" + self.__name + "' has not been set.")
+            print("An item type for group buy '" + self.__name + "' has not been set.")
+            return "An item type for group buy '" + self.__name + "' has not been set."
 
     def getPurchaseMethod(self):
         return self.__purchaseMethod
@@ -88,7 +90,7 @@ class GroupBuy:
 
     def jsonOut(self):
         py_dict = {
-                  "title": self.__name,
+                  "title": self.__name.strip(),
                   "item_type": self.__writtenItemType,
                   "prices": self.__price,
                   "end_date": self.__endDate,
@@ -96,7 +98,7 @@ class GroupBuy:
                   "purchase_type": self.__purchaseMethod,
                   "link": self.__postLink,
                   "img_link": self.__imgLink,
-                  "raw_info": self.__modComment
+                  "raw_info": self.__modComment.body
                   }
         json_dict = json.dumps(py_dict)
         return json_dict

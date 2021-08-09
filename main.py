@@ -69,15 +69,20 @@ def getVendors(mod_comment: str):
     for section in comment_sections:
         section_match = re.search(".*Vendor.?:", section)
         if section_match is not None:  # section contains list of vendors
-            list_of_vendors = section.split("**")[2].split("\n\n")
-            for each_vendor in list_of_vendors:
-                if len(each_vendor) > 1:
-                    vendor_tuple = vendor.split(" ")
-                    # first section contains region, second
-                    # contains vendor name + link
-                    vendors_temp[vendor_tuple[0]] = vendor_tuple[1]
-            return vendors_temp
+            try:
+                list_of_vendors = section.split("**")[2].split("\n\n")
+                for each_vendor in list_of_vendors:
+                    if len(each_vendor) > 1:
+                        vendor_tuple = each_vendor.split(" ")
+                        # first section contains region, second
+                        # contains vendor name + link
+                        vendors_temp[vendor_tuple[0]] = vendor_tuple[1]
+                return vendors_temp
+            except IndexError:
+                return None
 
+def toJson(gb: GroupBuy):
+    return gb.jsonOut()
 
 def getPrices(mod_comment: str, item_type: str):
     temp_prices = dict()
@@ -112,7 +117,7 @@ if __name__ == '__main__':
                       client_secret="hPZBFzWt_TFAFDV6yXbqA-qC9umTWg", password=os.environ['PASSWORD'],
                       username=os.environ['USERNAME'],
                       user_agent="User-Agent: MechGroupBuy Crawler :V0 (by u/HansTheIV)")
-    subredditPosts = reddit.subreddit('MechGroupBuys').new(limit=4)
+    subredditPosts = reddit.subreddit('MechGroupBuys').new(limit=100)
     GroupBuys = []
     for submission in subredditPosts:
 
@@ -125,15 +130,21 @@ if __name__ == '__main__':
             gb1 = GroupBuy(GB_name, submissionLink, modComment)
             gb1.setItemType(getType(gb1.getTitle()))
             prices = getPrices(modComment.body, gb1.getItemType())
-            for label in prices:
-                gb1.addPrice(label, prices[label])
+            if prices:
+                for label in prices:
+                    gb1.addPrice(label, prices[label])
             vendors = getVendors(modComment.body)
-            for vendor in vendors:
-                gb1.addVendor(vendor, vendors[vendor])
+            if vendors:
+                for vendor in vendors:
+                    gb1.addVendor(vendor, vendors[vendor])
 
             GroupBuys.append(gb1)
+    json_str = "["
     for gb in GroupBuys:
         # print(gb.getModComment().body)
-        gb.toString()
+        json_str += gb.jsonOut()
+        json_str += ", "
         pass
+    json_str += "]"
+    print(json_str)
     # print(GroupBuys)
