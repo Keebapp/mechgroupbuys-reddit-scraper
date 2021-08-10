@@ -142,7 +142,7 @@ and different year, though: group buys don't run for 12 months
         month_2_int = month_dict[month_2]
         day_2 = date_2.split(" ")[1]
     except KeyError:
-        return {"0000=00=00", "0000-00-00"}  # I'm not overly creative
+        return {"Start date not set", "End date not set"}  # I'm not overly creative
     if month_1_int > month_2_int or \
             ((month_1_int == month_2_int) and day_1 > day_2):  # if the second date happens first
         iso_date_1 = str(current_year) + "-" + getISONumString(month_1_int) + "-" + getISONumString(int(day_1))
@@ -251,8 +251,9 @@ if __name__ == '__main__':
                     gb1.add_vendor(vendor, vendors[vendor])
             if debug:
                 print(gb1.to_string())
-            getEndFactors(str(submission.title))
-            gb1.set_end()
+            end_factors = getEndFactors(str(submission.title))
+            dates = convertDatesToISO(end_factors[0], end_factors[1])
+            gb1.set_end(dates[0], dates[1], end_factors[2])
             GroupBuys.append(gb1)
     json_str = "["
     for gb in GroupBuys:
