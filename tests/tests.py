@@ -10,7 +10,7 @@ import unittest
 # allows import to 'see' files in the base directory
 sys.path.append('../')
 
-from main import getKeebSize, getType, getVendors, getPrices
+from main import get_keeb_size, get_type, get_vendors, get_prices
 
 class ScraperTests(unittest.TestCase):
     def test_get_type(self):
@@ -28,7 +28,7 @@ class ScraperTests(unittest.TestCase):
         )
         for title, output in tests:
             with self.subTest():
-                self.assertEqual(getType(title), output, msg=f'{title}')
+                self.assertEqual(get_type(title), output, msg=f'{title}')
 
     def test_get_keeb_size(self):
         tests = (
@@ -36,7 +36,7 @@ class ScraperTests(unittest.TestCase):
         )
         for title, output in tests:
             with self.subTest():
-                self.assertEqual(getKeebSize(title), output, msg=f'{title}')
+                self.assertEqual(get_keeb_size(title), output, msg=f'{title}')
 
     def test_get_vendors(self):
         tests = (
@@ -44,7 +44,7 @@ class ScraperTests(unittest.TestCase):
         )
         for mod_comment, output in tests:
             with self.subTest():
-                self.assertEqual(getVendors(mod_comment), output, msg=f'{mod_comment}')
+                self.assertEqual(get_vendors(mod_comment), output, msg=f'{mod_comment}')
 
     def test_get_prices(self):
         tests = (
@@ -52,4 +52,4 @@ class ScraperTests(unittest.TestCase):
         )
         for mod_comment, item_type, output in tests:
             with self.subTest():
-                self.assertEqual(getPrices(mod_comment, item_type), output, msg=f'{mod_comment} ({item_type})')
+                self.assertEqual(get_prices(mod_comment, item_type), output, msg=f'{mod_comment} ({item_type})')
