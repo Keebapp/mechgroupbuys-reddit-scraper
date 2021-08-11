@@ -4,75 +4,81 @@ import json
 class GroupBuy:
 
     def __init__(self, title: str, link: str, mod_comment):
+
+        self.__default_start_date = "No start date set"
+        self.__default_end_date = "No end date set"
+        self.__default_units = "# units not specified"
+
         self.__name = title
-        self.__postLink = link
-        self.__imgLink = str()  # TODO
+        self.__post_link = link
+        self.__img_link = str()  # TODO
         self.__price = dict()  # index prices by kit name (i.e "base kit" : "$134", "alphas", "$40", etc)
-        self.__endDate = str()  # TODO
+        self.__end_factors = [self.__default_start_date, self.__default_end_date, self.__default_units]  # TODO maybe? Still WIP
         self.__vendors = dict()  # index vendor links by vendor names (i.e "kbdfans" : "kbdfans.com")
-        self.__modComment = mod_comment
-        self.__purchaseMethod = str()  # TODO
+        self.__mod_comment = mod_comment
+        self.__purchase_method = str()  # TODO
 
-        self.__itemTypes = list()
-        self.__itemTypes.append("Keycaps")
-        self.__itemTypes.append("Switches")
-        self.__itemTypes.append("Deskmat")
-        self.__itemTypes.append("Keyboard")
-        self.__itemTypes.append("Misc")
-        self.__itemType = int()
-        self.__writtenItemType = str()
+        self.__item_types = list()
+        self.__item_types.append("Keycaps")
+        self.__item_types.append("Switches")
+        self.__item_types.append("Deskmat")
+        self.__item_types.append("Keyboard")
+        self.__item_types.append("Misc")
+        self.__item_type = int()
+        self.__written_item_type = str()
 
-    def setItemType(self, index: int):
-        self.__itemType = index
-        self.__writtenItemType = self.__itemTypes[self.__itemType]
+    def set_Item_Type(self, index: int):
+        self.__item_type = index
+        self.__written_item_type = self.__item_types[self.__item_type]
 
-    def getPrice(self):
+    def get_price(self):
         return self.__price
 
-    def getItemType(self):
-        if self.__itemType in range(0, 4):
-            return self.__writtenItemType
+    def get_item_type(self):
+        if self.__item_type in range(0, 4):
+            return self.__written_item_type
         else:
             # raise ModuleNotFoundError("An item type for group buy '" + self.__name + "' has not been set.")
             print("An item type for group buy '" + self.__name + "' has not been set.")
             return "An item type for group buy '" + self.__name + "' has not been set."
 
-    def getPurchaseMethod(self):
-        return self.__purchaseMethod
+    def get_purchase_method(self):
 
-    def getTitle(self):
+        return self.__purchase_method
+
+    def get_title(self):
         return self.__name
 
-    def getLink(self):
-        return self.__postLink
+    def get_link(self):
+        return self.__post_link
 
-    def getEndDate(self):
-        return self.__endDate
+    def get_end_date(self):
+        return self.__end_factors
 
-    def getVendors(self):
+    def get_vendors(self):
         return self.__vendors
 
-    def getModComment(self):
-        return self.__modComment
+    def get_mod_comment(self):
+        return self.__mod_comment
 
-    def addPrice(self, label: str, amount: str):  # amount should be a string starting with $
+    def add_price(self, label: str, amount: str):  # amount should be a string starting with $
         if label in self.__price.keys():
             raise KeyError("Kit already exists within this group buy.")
         else:
             self.__price[label] = amount
             return True
 
-    def setEnd(self, date: str):
-        self.__endDate = date
+    def set_end(self, date: list):
+        self.__end_factors = date
         return True
 
-    def addVendor(self, vendor_name: str, vendor_link: str):
+    def add_vendor(self, vendor_name: str, vendor_link: str):
         if vendor_name in self.__vendors:
             raise KeyError("Vendor already established for this group buy.")
         else:
             self.__vendors[vendor_name] = vendor_link
 
-    def vendorDictString(self):
+    def vendor_dict_string(self):
         special_characters = {'[', ']', '\\'}
         build_string = ""
         for vendor in self.__vendors:
@@ -84,21 +90,25 @@ class GroupBuy:
             build_string = build_string + fixed_vendor_name + ", "
         return build_string
 
-    def toString(self):
-        vendor_string = self.vendorDictString()
-        print(self.__name + ", " + str(self.__price) + " | vendors: " + vendor_string)
+    def end_date(self):
+        return self.__end_factors[0] + " - " + self.__end_factors[1] + " (" + self.__end_factors[2] + ")"
 
-    def jsonOut(self):
+    def to_string(self):
+        vendor_string = self.vendor_dict_string()
+        date_string = self.end_date()
+        return (self.__name + ", " + str(self.__price) + " | vendors: " + vendor_string + " | " + date_string)
+
+    def json_out(self):
         py_dict = {
                   "title": self.__name.strip(),
-                  "item_type": self.__writtenItemType,
+                  "item_type": self.__written_item_type,
                   "prices": self.__price,
-                  "end_date": self.__endDate,
+                  "end_date": self.__end_factors,
                   "vendors": self.__vendors,
-                  "purchase_type": self.__purchaseMethod,
-                  "link": self.__postLink,
-                  "img_link": self.__imgLink,
-                  "raw_info": self.__modComment.body
+                  "purchase_type": self.__purchase_method,
+                  "link": self.__post_link,
+                  "img_link": self.__img_link,
+                  "raw_info": self.__mod_comment.body
                   }
         json_dict = json.dumps(py_dict)
         return json_dict
